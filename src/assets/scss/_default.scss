@@ -5,13 +5,18 @@ html {
 	@media screen and (min-width: 412px) {font-size: 71.527%;}
 	@media screen and (min-width: 414px) {font-size: 71.875%;}
 	@media screen and (min-width: 768px) {font-size: 62.5%;}
+	height: 100%;
 }
 body {
+	display: flex;
+	flex-direction: column;
 	-webkit-text-size-adjust: none;
+	height: 100%;
 	margin: 0;
+	font: 14px/1.5 $font;
 	word-break: keep-all;
-	background: #fff;
 }
+#root {flex: 1;}
 h1,h2,h3,h4,h5,h6,p,figure,ul,ol,dl,dd,fieldset,pre {margin: 0;}
 ol, ul, td, fieldset {padding: 0;}
 input, select, textarea, button, pre, a {
@@ -81,17 +86,3 @@ button {
 pre {white-space: pre-line;}
 
 hr {margin: 25px 0; border: 1px solid #fff;}
-
-.swiper-container {
-	overflow: hidden;
-}
-.swiper-wrapper {
-	position: relative;
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	.swiper-slide {
-		width: 100%;
-		flex-shrink: 0;
-	}
-}
