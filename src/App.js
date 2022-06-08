@@ -9,11 +9,13 @@ function App() {
       <header>
         <h1><Link to="/">APP</Link></h1>
         <nav>
-          <Link to="/guide">guide</Link>
+          <Link to="/guide/list">FILELIST</Link>
+          <Link to="/guide/layout">LAYOUT</Link>
+          <Link to="/guide/comp">COMP</Link>
         </nav>
       </header>
       <Routes>
-        <Route path="/guide" element={<Guide />}/>
+        <Route path="/" element={<Guide />}/>
       </Routes>
     
     </BrowserRouter>
