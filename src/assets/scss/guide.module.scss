@@ -45,7 +45,7 @@ body::-webkit-scrollbar {
     margin-top: 25px;
   }
   .fold {
-    .guide-table {
+    .table {
       height: 0;
       overflow: hidden;
     }
@@ -97,7 +97,7 @@ body::-webkit-scrollbar {
   tbody tr:hover {
     background: #161b22;
   }
-  td .mo {
+  td a {
     ~ img {
       display: none;
       position: fixed;

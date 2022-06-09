@@ -3,9 +3,14 @@ import style from 'assets/scss/guide.module.scss'
 import ListSub from './list_sub'
 
 function ListSection({list}) {
+  function fold(e) {
+    let _this = e.currentTarget;
+    let wrap = _this.parentNode.parentNode;
+    wrap.classList.toggle("fold");
+  }
   return (
     <section>
-      <h2 className={style.subTit}>{list.title} <button type="button" className={style.btnFold}>접기</button></h2>
+      <h2 className={style.subTit}>{list.title} <button type="button" className={style.btnFold} onClick={fold}>접기</button></h2>
       <div className={style.table}>
         <table>
           <thead>
