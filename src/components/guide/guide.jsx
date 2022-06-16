@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import style from 'assets/scss/guide.module.scss'
+import 'assets/scss/hlj/atom-one-dark.scss';
 import GuideRoutes from 'components/guide/guide-routes'
 
 function Guide() {

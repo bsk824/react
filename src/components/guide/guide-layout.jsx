@@ -1,6 +1,5 @@
 import React from 'react';
 import Highlight from 'react-highlight';
-import 'assets/scss/hlj/atom-one-dark.scss';
 
 function GuideLayout() {
   return (
