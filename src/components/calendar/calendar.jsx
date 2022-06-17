@@ -1,58 +1,135 @@
 import React from 'react';
 
 const Calendar = () => {
+
+  const prevShowNum = 0;
+  const nextShowNum = 0;
+  let selectedDate = '20220430';
+  
+  const returnStr = (number) => {
+    if(number < 10) number = '0' + number;
+    return number;
+  }
+
+  const returnDateStr = (str) => {
+    const year = str.substring(0, 4);
+    const month = returnStr(Number(str.substring(4, 6)) + 1);
+    const day = str.substring(6, 8);
+    return `${year}${month}${day}`;
+  }
+  
+  selectedDate = returnDateStr('20220430');
+
+  let dayArry = [];
+
   const date = new Date();
   const utc = date.getTime() + (date.getTimezoneOffset() * 60 * 1000);
   const kstGap = 9 * 60 * 60 * 1000;
-  const today = new Date(utc + kstGap);
-  // const thisMonth = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  const thisMonth = new Date('2022', '01', '01');
-
-  let currentYear = thisMonth.getFullYear();
-  let currentMonth = thisMonth.getMonth();
-  let currentDate = thisMonth.getDate();
+  const now = new Date(utc + kstGap);
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const todayStr = `${now.getFullYear()}${returnStr(now.getMonth())}${returnStr(now.getDate())}`;
   
-  let dateMap = new Array;
-  const renderCalender = (thisMonth) => {
-    currentYear = thisMonth.getFullYear();
-    currentMonth = thisMonth.getMonth();
-    currentDate = thisMonth.getDate();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
 
-    let startDay = new Date(currentYear, currentMonth, 0);
-    let prevDate = startDay.getDate();
-    let prevDay = startDay.getDay();
+  const startDay = new Date(currentYear, currentMonth, 0);
+  const prevDay = startDay.getDay();
+  const prevDate = startDay.getDate();
+  
+  let showPrevDay = prevDate - prevShowNum - prevDay;
+  
+  for (let prevDayNum = showPrevDay; prevDayNum <= prevDate; prevDayNum++) {
+    let prevYear = currentYear;
+    let prevMonth = currentMonth - 1;
+    if(prevMonth < 0) {
+      prevMonth = 11;
+      prevYear = currentYear - 1;
+    }
+    prevMonth = returnStr(prevMonth);
+    prevDayNum = returnStr(prevDayNum);
+    let date = new Date(prevYear, prevMonth, prevDayNum);
+    let dateStr =  `${prevYear}${prevMonth}${prevDayNum}`;
 
-    let endDay = new Date(currentYear, currentMonth + 1, 0);
-    let nextDate = endDay.getDate();
-    let nextDay = endDay.getDay();
-    
-    for (let idx = prevDate - prevDay; idx <= prevDate; idx++) {
-      let prevMonth = currentMonth - 1;
-      if(prevMonth < 10) prevMonth = '0'+prevMonth;
-      if(idx < 10) idx = '0'+idx;
-      dateMap.push([currentYear, prevMonth, idx]);
-    }
-    for (let idx = 1; idx <= nextDate; idx++) {
-      let nowMonth = currentMonth;
-      if(nowMonth < 10) nowMonth = '0'+nowMonth;
-      if(idx < 10) idx = '0'+idx;
-      dateMap.push([currentYear, nowMonth, idx]);
-    }
-    for (let idx = 1; idx <= (6 - nextDay == 6 ? 0 : 6 - nextDay); idx++) {
-      let nextMonth = currentMonth + 1;
-      if(nextMonth < 10) nextMonth = '0'+nextMonth;
-      if(idx < 10) idx = '0'+idx;
-      dateMap.push([currentYear, nextMonth, idx]);
-    }
+    dayArry.push(
+      {
+        date: date,
+        day: prevDayNum,
+        prev: true,
+        today : (todayStr === dateStr) ? true : false,
+        selected : (selectedDate === dateStr) ? true : false,
+      }
+    )
   }
-  renderCalender(thisMonth);
-  const returnDate = (key) => {
-    console.log(key);
+
+  const endDay = new Date(currentYear, currentMonth + 1, 0);
+  
+  const nextDate = endDay.getDate();
+
+  for (let days = 1; days <= nextDate; days++) {
+    let year = currentYear;
+    let month = currentMonth;
+    month = returnStr(month);
+    days = returnStr(days);
+    let date = new Date(year, month, days);
+    let dateStr =  `${year}${month}${days}`;
+
+    dayArry.push(
+      {
+        date: date,
+        day: days,
+        today : (todayStr === dateStr) ? true : false,
+        selected : (selectedDate === dateStr) ? true : false,
+      }
+    )
   }
+
+  const nextDay = endDay.getDay();
+
+  let showNextDay = (6 - nextDay === 6) ? 0 : 6 - nextDay;
+  showNextDay = showNextDay + nextShowNum;
+
+  for (let nextDayNum = 1; nextDayNum <= showNextDay; nextDayNum++) {
+    let nextYear = currentYear;
+    let nextMonth = currentMonth + 1;
+    if(nextMonth > 11) {
+      nextMonth = 0;
+      nextYear = currentYear + 1;
+    }
+    nextMonth = returnStr(nextMonth);
+    nextDayNum = returnStr(nextDayNum);
+    let date = new Date(nextYear, nextMonth, nextDayNum);
+    let dateStr =  `${nextYear}${nextMonth}${nextDayNum}`;
+
+    dayArry.push(
+      {
+        date: date,
+        day: nextDayNum,
+        next: true,
+        today : (todayStr === dateStr) ? true : false,
+        selected : (selectedDate === dateStr) ? true : false,
+      }
+    )
+  }
+
+  const returnDate = (arg) => {
+    console.log(arg);
+  }
+  
   return(
     <>
-      {dateMap.map(date => (
-        <div key={`${date[0]}${date[1]}${date[2]}`} onClick={()=>returnDate(`${date[0]}${date[1]}${date[2]}`)}>{date[2]}</div>
+      {dayArry.map(date => (
+        <div
+          key={date.date}
+          onClick={()=>returnDate(date.date)}
+          className={
+            (date.today ? 'today ' : '')+
+            (date.prev ? 'prev ': '')+
+            (date.next ? 'next ': '')+
+            (date.selected ? 'selected ': '')
+          }
+        >
+          {date.day}
+        </div>
 			))}
     </>
   ) 
