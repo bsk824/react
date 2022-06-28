@@ -53,6 +53,21 @@
 	}
 }
 
-.today {
-	background: green;
+.calendar {
+	display: flex;
+	flex-wrap: wrap;
+	background: #fff;
+	div {
+		width: calc(100% / 7);
+		text-align: center;
+	}
+	.prev, .next {
+		opacity: .1;
+	}
+	.today {
+		background: green;
+	}
+	.select {
+		background: red;
+	}
 }
