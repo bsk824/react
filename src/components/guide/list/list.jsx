@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import style from 'assets/scss/guide.module.scss'
 import ListSection from './list_section'
 

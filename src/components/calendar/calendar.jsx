@@ -84,9 +84,6 @@ const Calendar = () => {
     }
 
     const nextDay = endDay.getDay();
-
-    
-    console.log(6 - nextDay);
     
     let showNextDay = (6 - nextDay === 6) ? 6 : 6 - nextDay;
     showNextDay = (showNextDay === 0) ? 7 : showNextDay;
