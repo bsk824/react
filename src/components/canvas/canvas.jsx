@@ -2,41 +2,88 @@ import React, { useEffect, useState } from 'react';
 
 const Canvas = () => {
   let wrap;
-  let item;
-  let raf;
-  let y = 36;
-  let h = 5;
-  const set = () => {
-    item.beginPath();
-    item.fillRect(10, y, 5, h);
-    item.fill();
-  }
-  const draw = () => {
-    h = h + 0.93;
-    y = y - 0.54;
-    item.clearRect(0,0, wrap.width, wrap.height);
-    item.beginPath();
-    item.fillRect(10, y, 5, h);
-    item.fill();
-    console.log(h, y);
-    if(h < 67) {
-      raf = window.requestAnimationFrame(draw);
+  let items;
+  const scrollNum = (scrollTop, start, end) => {
+    let result;
+    if(scrollTop >= start && scrollTop <= end) {
+      result = (scrollTop - start) / (end - start);
+    } else if (scrollTop > end) {
+      result = 1; 
     } else {
-      window.cancelAnimationFrame(draw);
+      result = 0;
+    }
+    console.log(result);
+  }
+  const calcNum = (val, time) => {
+    const result = val / (time * 60);
+    return result;
+  }
+  const objSet = idx => {
+    const x = (idx * 17) + 2.5;
+    items.strokeStyle = '#40BFDD';
+    items.beginPath();
+    items.lineWidth = 5;
+    items.lineCap = 'round';
+    items.moveTo(x, 58);
+    items.lineTo(x, 58);
+    items.stroke();
+  }
+  const modFunc = () => {
+    const yArry = [75, 61, 73, 54, 61, 56, 46, 24, 40, 53, 42, 50];
+    const hArry = [20, 24, 32, 40, 16, 36, 24, 56, 24, 20, 40, 16];
+    const mod = (idx) => {
+      let y = 58;
+      let calcY = y - yArry[idx];
+      let h = 58;
+      let calcH = yArry[idx] + hArry[idx] - h;
+      const x = (idx * 17) + 2.5;
+      const objMod = () => {
+        let raf;
+        if(h < yArry[idx] + hArry[idx]) {
+          if(58 - yArry[idx] < 0) {
+            items.clearRect(x - 2.5, 0, 10, y);
+            y = y - calcNum(calcY, 1.2);
+          } else {
+            y = y - calcNum(calcY, 1.2);
+          }
+          h = h + calcNum(calcH, 1.2);
+          items.beginPath();
+          items.moveTo(x, y);
+          items.lineTo(x, h);
+          items.stroke();
+          raf = window.requestAnimationFrame(objMod);
+        } else {
+          window.cancelAnimationFrame(objMod);
+        }
+      }
+      objMod();
+    }
+    for(let idx = 0; idx <= 11; idx++) {
+      mod(idx);
     }
   }
+
 	useEffect(()=>{
     wrap = document.querySelector('canvas');
-    item = wrap.getContext('2d');
+    items = wrap.getContext('2d');
     const width = window.innerWidth;
     wrap.setAttribute('width', width);
     
-    set();
+    for(let idx = 0; idx <= 11; idx++) {
+      objSet(idx);
+    }
+    setTimeout(()=>{
+      modFunc();
+    },1000);
+
+    window.addEventListener('scroll',()=> {
+      scrollNum(window.scrollY, 1000, 5000);
+    })
   
   }, []);
   return (
     <>
-      <canvas height='500' onClick={draw}></canvas>
+      <canvas height='10000'></canvas>
     </>
   )
 }

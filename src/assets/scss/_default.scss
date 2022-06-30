@@ -15,6 +15,7 @@ body {
 	margin: 0;
 	font: 14px/1.5 $font;
 	word-break: keep-all;
+	&::-webkit-scrollbar { display: none; }
 }
 #root {flex: 1;}
 h1,h2,h3,h4,h5,h6,p,figure,ul,ol,dl,dd,fieldset,pre {margin: 0;}
