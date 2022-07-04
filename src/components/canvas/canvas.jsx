@@ -1,8 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 const Canvas = () => {
-  let wrap;
-  let items;
+  let wrap = null;
+  let items = null;
+  const init = () => {
+    wrap = document.querySelector('canvas');
+    items = wrap.getContext('2d');
+    const width = window.innerWidth;
+    wrap.setAttribute('width', width);
+
+  }
   const scrollNum = (scrollTop, start, end) => {
     let result;
     if(scrollTop >= start && scrollTop <= end) {
@@ -38,7 +45,6 @@ const Canvas = () => {
       let calcH = yArry[idx] + hArry[idx] - h;
       const x = (idx * 17) + 2.5;
       const objMod = () => {
-        let raf;
         if(h < yArry[idx] + hArry[idx]) {
           if(58 - yArry[idx] < 0) {
             items.clearRect(x - 2.5, 0, 10, y);
@@ -51,9 +57,7 @@ const Canvas = () => {
           items.moveTo(x, y);
           items.lineTo(x, h);
           items.stroke();
-          raf = window.requestAnimationFrame(objMod);
-        } else {
-          window.cancelAnimationFrame(objMod);
+          window.requestAnimationFrame(objMod);
         }
       }
       objMod();
@@ -64,11 +68,7 @@ const Canvas = () => {
   }
 
 	useEffect(()=>{
-    wrap = document.querySelector('canvas');
-    items = wrap.getContext('2d');
-    const width = window.innerWidth;
-    wrap.setAttribute('width', width);
-    
+    init();
     for(let idx = 0; idx <= 11; idx++) {
       objSet(idx);
     }
@@ -80,7 +80,7 @@ const Canvas = () => {
       scrollNum(window.scrollY, 1000, 5000);
     })
   
-  }, []);
+  });
   return (
     <>
       <canvas height='10000'></canvas>

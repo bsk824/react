@@ -3,6 +3,20 @@ import React, { useEffect, useState } from 'react';
 const Calendar = () => {
   const [selectValue, setSelectValue] = useState(null);
   const [caleDays, setDays] = useState([]);
+  const [currentYear, setYear] = useState(()=>{
+    const date = new Date();
+    const utc = date.getTime() + (date.getTimezoneOffset() * 60 * 1000);
+    const kstGap = 9 * 60 * 60 * 1000;
+    const now = new Date(utc + kstGap);
+    return now.getFullYear();
+  });
+  const [currentMonth, setMonth] = useState(()=>{
+    const date = new Date();
+    const utc = date.getTime() + (date.getTimezoneOffset() * 60 * 1000);
+    const kstGap = 9 * 60 * 60 * 1000;
+    const now = new Date(utc + kstGap);
+    return now.getMonth();
+  });
   const prevShowNum = 0;
   const nextShowNum = 0;
   
@@ -10,113 +24,6 @@ const Calendar = () => {
     if(number < 10) number = '0' + number;
     return number;
   }
-
-  const render = () => {
-    let dayArry = [];
-    const date = new Date();
-    const utc = date.getTime() + (date.getTimezoneOffset() * 60 * 1000);
-    const kstGap = 9 * 60 * 60 * 1000;
-    const now = new Date(utc + kstGap);
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const todayStr = `${now.getFullYear()}${returnStr(now.getMonth() + 1)}${returnStr(now.getDate())}`;
-    
-    let currentYear = today.getFullYear();
-    let currentMonth = today.getMonth();
-    let currentDay = null;
-
-    if(selectValue != null) {
-      const selectYear = selectValue.substring(0, 4);
-      const selectMonth = returnStr(Number(selectValue.substring(4, 6)) - 1);
-      const selectDay = returnStr(selectValue.substring(6, 8));
-      const selectDate = new Date(selectYear, selectMonth, selectDay);
-      currentYear = selectDate.getFullYear();
-      currentMonth = selectDate.getMonth();
-      currentDay = selectDate.getDay();
-    }
-
-    const startDay = new Date(currentYear, currentMonth, 0);
-    const prevDay = startDay.getDay();
-    const prevDate = startDay.getDate();
-    
-    let showPrevDay = prevDate - prevShowNum - prevDay;
-    
-    for (let prevDayNum = showPrevDay; prevDayNum <= prevDate; prevDayNum++) {
-      let prevYear = currentYear;
-      let prevMonth = currentMonth - 1;
-      if(prevMonth < 0) {
-        prevMonth = 11;
-        prevYear = currentYear - 1;
-      }
-      prevMonth = returnStr(prevMonth + 1);
-      prevDayNum = returnStr(prevDayNum);
-      let dateStr =  `${prevYear}${prevMonth}${prevDayNum}`;
-
-      dayArry.push(
-        {
-          date: dateStr,
-          day: prevDayNum,
-          prev: true,
-          today : (todayStr === dateStr) ? true : false,
-          select : (selectValue === dateStr) ? true : false,
-        }
-      )
-    }
-
-    const endDay = new Date(currentYear, currentMonth + 1, 0);
-    
-    const nextDate = endDay.getDate();
-
-    for (let days = 1; days <= nextDate; days++) {
-      let year = currentYear;
-      let month = currentMonth;
-      month = returnStr(month + 1);
-      days = returnStr(days);
-      let dateStr = `${year}${month}${days}`;
-
-      dayArry.push(
-        {
-          date: dateStr,
-          day: days,
-          today : (todayStr === dateStr) ? true : false,
-          select : (selectValue === dateStr) ? true : false,
-        }
-      )
-    }
-
-    const nextDay = endDay.getDay();
-    
-    let showNextDay = (6 - nextDay === 6) ? 6 : 6 - nextDay;
-    showNextDay = (showNextDay === 0) ? 7 : showNextDay;
-    showNextDay = showNextDay + nextShowNum;
-
-    for (let nextDayNum = 1; nextDayNum <= showNextDay; nextDayNum++) {
-      let nextYear = currentYear;
-      let nextMonth = currentMonth + 1;
-      if(nextMonth > 11) {
-        nextMonth = 0;
-        nextYear = currentYear + 1;
-      }
-      nextMonth = returnStr(nextMonth + 1);
-      nextDayNum = returnStr(nextDayNum);
-      let dateStr =  `${nextYear}${nextMonth}${nextDayNum}`;
-
-      dayArry.push(
-        {
-          date: dateStr,
-          day: nextDayNum,
-          next: true,
-          today : (todayStr === dateStr) ? true : false,
-          select : (selectValue === dateStr) ? true : false,
-        }
-      )
-    }
-
-    return dayArry;
-  }
-
-	useEffect(()=>{
-    setDays(render());
-  }, [selectValue]);
 
   const selectDate = (arg) => {
     setSelectValue(arg);
@@ -128,9 +35,133 @@ const Calendar = () => {
     }
   }
 
+  const classRender = (obj) => {
+    let result = null;
+    const resultMake = (val) => {
+      if(result !== null) {
+        result += ' ' + val;
+      } else {
+        result = val;
+      }
+    }
+    
+    if(obj.today) resultMake('today');
+    if(obj.prev) resultMake('prev');
+    if(obj.next) resultMake('next');
+    if(obj.select) resultMake('select');
+    if(obj.selected) resultMake('selected');
+
+    return result;
+  }
+  const prevMonth = () => {
+    if(currentMonth === 0) {
+      setYear(currentYear - 1);
+      setMonth(11);
+    } else {
+      setMonth(currentMonth - 1);
+    }
+  }
+  const nextMonth = () => {
+    if(currentMonth === 11) {
+      setYear(currentYear + 1);
+      setMonth(0);
+    } else {
+      setMonth(currentMonth + 1);
+    }
+  }
+
+	useEffect(()=>{
+    const render = () => {
+      let dayArry = [];
+      const date = new Date();
+      const utc = date.getTime() + (date.getTimezoneOffset() * 60 * 1000);
+      const kstGap = 9 * 60 * 60 * 1000;
+      const now = new Date(utc + kstGap);
+      const todayStr = `${now.getFullYear()}${returnStr(now.getMonth() + 1)}${returnStr(now.getDate())}`;
+      
+      const startDay = new Date(currentYear, currentMonth, 0);
+      const prevDay = startDay.getDay();
+      const prevDate = startDay.getDate();
+      
+      let showPrevDay = prevDate - prevShowNum - prevDay;
+      
+      for (let prevDayNum = showPrevDay; prevDayNum <= prevDate; prevDayNum++) {
+        let prevYear = currentYear;
+        let prevMonth = currentMonth - 1;
+        if(prevMonth < 0) {
+          prevMonth = 11;
+          prevYear = currentYear - 1;
+        }
+        prevMonth = returnStr(prevMonth + 1);
+        prevDayNum = returnStr(prevDayNum);
+        let dateStr =  `${prevYear}${prevMonth}${prevDayNum}`;
+  
+        dayArry.push({
+          date: dateStr,
+          day: prevDayNum,
+          prev: true,
+          today : (todayStr === dateStr) ? true : false,
+          select : (selectValue === dateStr) ? true : false,
+        })
+      }
+  
+      const endDay = new Date(currentYear, currentMonth + 1, 0);
+      
+      const nextDate = endDay.getDate();
+  
+      for (let days = 1; days <= nextDate; days++) {
+        let year = currentYear;
+        let month = currentMonth;
+        month = returnStr(month + 1);
+        days = returnStr(days);
+        let dateStr = `${year}${month}${days}`;
+  
+        dayArry.push({
+          date: dateStr,
+          day: days,
+          today : (todayStr === dateStr) ? true : false,
+          select : (selectValue === dateStr) ? true : false,
+        })
+      }
+  
+      const nextDay = endDay.getDay();
+      
+      let showNextDay = (6 - nextDay === 6) ? 6 : 6 - nextDay;
+      showNextDay = (showNextDay === 0) ? 7 : showNextDay;
+      showNextDay = showNextDay + nextShowNum;
+  
+      for (let nextDayNum = 1; nextDayNum <= showNextDay; nextDayNum++) {
+        let nextYear = currentYear;
+        let nextMonth = currentMonth + 1;
+        if(nextMonth > 11) {
+          nextMonth = 0;
+          nextYear = currentYear + 1;
+        }
+        nextMonth = returnStr(nextMonth + 1);
+        nextDayNum = returnStr(nextDayNum);
+        let dateStr =  `${nextYear}${nextMonth}${nextDayNum}`;
+  
+        dayArry.push({
+          date: dateStr,
+          day: nextDayNum,
+          next: true,
+          today : (todayStr === dateStr) ? true : false,
+          select : (selectValue === dateStr) ? true : false,
+        })
+      }
+  
+      return dayArry;
+    }
+    setDays(render());
+  }, [selectValue, currentYear, currentMonth]);
+
   return(
     <>
-      <input type="text" onKeyPress={setRender} />
+      <button onClick={prevMonth}>prev</button>
+      <input type="text" onKeyPress={setRender} placeholder={selectValue} />
+      {currentYear}
+      {returnStr(currentMonth + 1)}
+      <button onClick={nextMonth}>next</button>
       <div className='calendar'>
         <div>일</div>
         <div>월</div>
@@ -143,13 +174,7 @@ const Calendar = () => {
           <div
             key={date.date}
             onClick={()=>selectDate(date.date)}
-            className={
-              (date.today ? 'today ' : '')+
-              (date.prev ? 'prev ': '')+
-              (date.next ? 'next ': '')+
-              (date.select ? 'select ': '')+
-              (date.selected ? 'selected ': '')
-            }
+            className={classRender(date)}
           >
             {date.day}
           </div>
