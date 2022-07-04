@@ -71,9 +71,11 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 `
 <pre>
 <code>
+"
 <div>
   test
 </div>
+"
 `
 
 </code>
