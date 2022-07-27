@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
 const Calendar = () => {
+  const [calType] = useState('period');
   const [selectValue, setSelectValue] = useState(null);
-  const [caleDays, setDays] = useState([]);
+  const [calDays, setDays] = useState([]);
   const [currentYear, setYear] = useState(()=>{
     const date = new Date();
     const utc = date.getTime() + (date.getTimezoneOffset() * 60 * 1000);
@@ -30,8 +31,18 @@ const Calendar = () => {
   }
 
   const setRender = (e) => {
+    const val = e.target.value;
+    const valY = Number(val.substring(0,4));
+    const valM = Number(val.substring(4,6)) - 1;
+    const valD = Number(val.substring(6,8));
+    const valDate = new Date(valY, valM, valD);
+
     if(e.key === 'Enter') {
-      setSelectValue(e.target.value);
+      if(valM < 12 && valDate.getFullYear() === valY && valDate.getMonth() === valM) {
+        setYear(valY);
+        setMonth(valM);
+        setSelectValue(val);
+      }
     }
   }
 
@@ -53,6 +64,7 @@ const Calendar = () => {
 
     return result;
   }
+
   const prevMonth = () => {
     if(currentMonth === 0) {
       setYear(currentYear - 1);
@@ -61,6 +73,7 @@ const Calendar = () => {
       setMonth(currentMonth - 1);
     }
   }
+
   const nextMonth = () => {
     if(currentMonth === 11) {
       setYear(currentYear + 1);
@@ -170,7 +183,7 @@ const Calendar = () => {
         <div>목</div>
         <div>금</div>
         <div>토</div>
-        {caleDays.map(date => (
+        {calDays.map(date => (
           <div
             key={date.date}
             onClick={()=>selectDate(date.date)}
