@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 const Calendar = () => {
   const [calType] = useState('period');
   const [selectValue, setSelectValue] = useState(null);
+  const [periodValue, setPeriodValue] = useState({start: null, end: null});
   const [calDays, setDays] = useState([]);
   const [currentYear, setYear] = useState(()=>{
     const date = new Date();
@@ -27,7 +28,24 @@ const Calendar = () => {
   }
 
   const selectDate = (arg) => {
-    setSelectValue(arg);
+    if(calType === 'period') {
+      if(periodValue.start === null) {
+        periodValue.start = arg;
+      } else if(arg > periodValue.start) {
+        if(periodValue.end === null) {
+          periodValue.end = arg;
+        } else {
+          periodValue.start = arg;
+          periodValue.end = null;
+        }
+      } else if(arg <= periodValue.start) {
+        periodValue.start = arg;
+        periodValue.end = null;
+      }
+      setPeriodValue({...periodValue})
+    } else {
+      setSelectValue(arg);
+    }
   }
 
   const setRender = (e) => {
@@ -61,6 +79,8 @@ const Calendar = () => {
     if(obj.next) resultMake('next');
     if(obj.select) resultMake('select');
     if(obj.selected) resultMake('selected');
+    if(obj.start) resultMake('start');
+    if(obj.end) resultMake('end');
 
     return result;
   }
@@ -115,6 +135,8 @@ const Calendar = () => {
           prev: true,
           today : (todayStr === dateStr) ? true : false,
           select : (selectValue === dateStr) ? true : false,
+          start: (periodValue.start === dateStr) ? true : false,
+          end: (periodValue.end === dateStr) ? true : false,
         })
       }
   
@@ -134,6 +156,9 @@ const Calendar = () => {
           day: days,
           today : (todayStr === dateStr) ? true : false,
           select : (selectValue === dateStr) ? true : false,
+          start: (periodValue.start === dateStr) ? true : false,
+          end: (periodValue.end === dateStr) ? true : false,
+          
         })
       }
   
@@ -160,13 +185,15 @@ const Calendar = () => {
           next: true,
           today : (todayStr === dateStr) ? true : false,
           select : (selectValue === dateStr) ? true : false,
+          start: (periodValue.start === dateStr) ? true : false,
+          end: (periodValue.end === dateStr) ? true : false,
         })
       }
   
       return dayArry;
     }
     setDays(render());
-  }, [selectValue, currentYear, currentMonth]);
+  }, [selectValue, periodValue, currentYear, currentMonth]);
 
   return(
     <>
