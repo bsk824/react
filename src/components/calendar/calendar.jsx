@@ -81,6 +81,7 @@ const Calendar = () => {
     if(obj.selected) resultMake('selected');
     if(obj.start) resultMake('start');
     if(obj.end) resultMake('end');
+    if(obj.current) resultMake('current');
 
     return result;
   }
@@ -137,6 +138,7 @@ const Calendar = () => {
           select : (selectValue === dateStr) ? true : false,
           start: (periodValue.start === dateStr) ? true : false,
           end: (periodValue.end === dateStr) ? true : false,
+          current: (periodValue.start < dateStr && periodValue.end > dateStr) ? true : false,
         })
       }
   
@@ -158,7 +160,7 @@ const Calendar = () => {
           select : (selectValue === dateStr) ? true : false,
           start: (periodValue.start === dateStr) ? true : false,
           end: (periodValue.end === dateStr) ? true : false,
-          
+          current: (periodValue.start < dateStr && periodValue.end > dateStr) ? true : false,
         })
       }
   
@@ -187,6 +189,7 @@ const Calendar = () => {
           select : (selectValue === dateStr) ? true : false,
           start: (periodValue.start === dateStr) ? true : false,
           end: (periodValue.end === dateStr) ? true : false,
+          current: (periodValue.start < dateStr && periodValue.end > dateStr) ? true : false,
         })
       }
   
