@@ -4,7 +4,13 @@ import Calendar from 'components/calendar/calendar';
 function GuideInfo() {
   return (
     <>
-      <Calendar/>
+      <Calendar param={{
+        type : '기간',
+        prevShowLine : 0,
+        nextShowLine : 0,
+        minDate : 20220801,
+        maxDate : 20220815,
+      }}/>
     </>
   );
 }

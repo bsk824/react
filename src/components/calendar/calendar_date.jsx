@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
 const CalendarDate = ({
-  calType,
+  option,
   selectValue,
   setSelectValue,
   periodValue,
   setPeriodValue,
   currentYear,
   currentMonth,
-  prevShowNum,
-  nextShowNum
 }) => {
   const [calDays, setDays] = useState([]);
   
@@ -19,7 +17,7 @@ const CalendarDate = ({
   }
   
   const selectDate = (arg) => {
-    if(calType === 'period') {
+    if(option.type === '기간') {
       if(periodValue.start === null) {
         periodValue.start = arg;
       } else if(arg > periodValue.start) {
@@ -74,7 +72,7 @@ const CalendarDate = ({
       const prevDay = startDay.getDay();
       const prevDate = startDay.getDate();
       
-      let showPrevDay = prevDate - prevShowNum - prevDay;
+      let showPrevDay = prevDate - (option.prevShowLine * 7) - prevDay;
       
       for (let prevDayNum = showPrevDay; prevDayNum <= prevDate; prevDayNum++) {
         let prevYear = currentYear;
@@ -96,6 +94,7 @@ const CalendarDate = ({
           start: (periodValue.start === dateStr) ? true : false,
           end: (periodValue.end === dateStr) ? true : false,
           current: (periodValue.start < dateStr && periodValue.end > dateStr) ? true : false,
+          disabled: (dateStr <= option.minDate || dateStr >= option.maxDate) ? true : false,
         })
       }
   
@@ -118,6 +117,7 @@ const CalendarDate = ({
           start: (periodValue.start === dateStr) ? true : false,
           end: (periodValue.end === dateStr) ? true : false,
           current: (periodValue.start < dateStr && periodValue.end > dateStr) ? true : false,
+          disabled: (dateStr <= option.minDate || dateStr >= option.maxDate) ? true : false,
         })
       }
   
@@ -125,7 +125,7 @@ const CalendarDate = ({
       
       let showNextDay = (6 - nextDay === 6) ? 6 : 6 - nextDay;
       showNextDay = (showNextDay === 0) ? 7 : showNextDay;
-      showNextDay = showNextDay + nextShowNum;
+      showNextDay = showNextDay + (option.nextShowLine * 7);
   
       for (let nextDayNum = 1; nextDayNum <= showNextDay; nextDayNum++) {
         let nextYear = currentYear;
@@ -147,20 +147,21 @@ const CalendarDate = ({
           start: (periodValue.start === dateStr) ? true : false,
           end: (periodValue.end === dateStr) ? true : false,
           current: (periodValue.start < dateStr && periodValue.end > dateStr) ? true : false,
+          disabled: (dateStr <= option.minDate || dateStr >= option.maxDate) ? true : false,
         })
       }
   
       return dayArry;
     }
     setDays(render());
-  }, [selectValue, periodValue, currentYear, currentMonth, prevShowNum, nextShowNum]);
+  }, [selectValue, periodValue, currentYear, currentMonth, option]);
 
   return(
     <>
       {calDays.map(date => (
         <div
           key={date.date}
-          onClick={()=>selectDate(date.date)}
+          onClick={date.disabled ? null : ()=>selectDate(date.date)}
           className={classRender(date)}
         >
           {date.day}

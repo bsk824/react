@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CalendarInput = ({onSet, value}) => {
+const CalendarInput = ({option, onSet, value, periodValue}) => {
 
   const setRender = (e) => {
     const val = e.target.value;
@@ -21,7 +21,15 @@ const CalendarInput = ({onSet, value}) => {
   }
   
   return (
-    <input type="text" onKeyPress={setRender} placeholder={value} />
+    (option.type === '기간')
+      ?
+      <>
+        <input type="text" onKeyPress={setRender} placeholder={periodValue.start} />
+        <span>~</span>
+        <input type="text" onKeyPress={setRender} placeholder={periodValue.end} />
+      </>
+      :
+      <input type="text" onKeyPress={setRender} placeholder={value} />
   )
 }
 

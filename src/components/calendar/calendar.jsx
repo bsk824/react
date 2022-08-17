@@ -2,8 +2,16 @@ import React, { useState } from 'react';
 import CalendarInput from './calendar_input';
 import CalendarDate from './calendar_date';
 
-const Calendar = () => {
-  const [calType] = useState('period');
+const Calendar = ({param}) => {
+
+  const [option] = useState({
+    type: (param && param.type) ? param.type : null,
+    prevShowLine: (param && param.prevShowLine) ? param.prevShowLine : 0,
+    nextShowLine: (param && param.nextShowLine) ? param.nextShowLine : 0,
+    minDate: (param && param.minDate) ? param.minDate : null,
+    maxDate: (param && param.maxDate) ? param.maxDate : null,
+  });
+
   const [selectValue, setSelectValue] = useState(null);
   const [periodValue, setPeriodValue] = useState({start: null, end: null});
   const [currentYear, setYear] = useState(()=>{
@@ -20,8 +28,6 @@ const Calendar = () => {
     const now = new Date(utc + kstGap);
     return now.getMonth();
   });
-  const [prevShowNum] = useState(0);
-  const [nextShowNum] = useState(0);
   
   const returnStr = (number) => {
     if(number < 10) number = '0' + number;
@@ -55,7 +61,12 @@ const Calendar = () => {
   return(
     <>
       <button onClick={prevMonth}>prev</button>
-      <CalendarInput onSet={setRender} value={selectValue} />
+      <CalendarInput
+        option={option}
+        onSet={setRender}
+        value={selectValue}
+        periodValue={periodValue}
+      />
       {currentYear}
       {returnStr(currentMonth + 1)}
       <button onClick={nextMonth}>next</button>
@@ -68,15 +79,13 @@ const Calendar = () => {
         <div>금</div>
         <div>토</div>
         <CalendarDate
-          calType={calType}
           selectValue={selectValue}
           setSelectValue={setSelectValue}
           periodValue={periodValue}
           setPeriodValue={setPeriodValue}
           currentYear={currentYear}
           currentMonth={currentMonth}
-          prevShowNum={prevShowNum}
-          nextShowNum={nextShowNum}
+          option={option}
         />
       </div>
     </>
