@@ -9,8 +9,10 @@ const CalendarInput = ({option, onSet, value, periodValue}) => {
     const valD = Number(val.substring(6,8));
     const valDate = new Date(valY, valM, valD);
 
-    if(e.key === 'Enter') {
-      if(valM < 12 && valDate.getFullYear() === valY && valDate.getMonth() === valM) {
+    if(e.key === 'Enter' && valM < 12 && valDate.getFullYear() === valY && valDate.getMonth() === valM) {
+      if(option.type === '기간') {
+        
+      } else {
         onSet({
           'year' : valY,
           'month' : valM,

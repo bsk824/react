@@ -55,6 +55,7 @@ const CalendarDate = ({
     if(obj.start) resultMake('start');
     if(obj.end) resultMake('end');
     if(obj.current) resultMake('current');
+    if(obj.disabled) resultMake('disabled');
 
     return result;
   }
