@@ -5,7 +5,7 @@ import Guide from 'components/guide/guide'
 function App() {
   return (
     <Routes>
-      <Route path="/guide/*" element={<Guide />}/>
+      <Route path="/*" element={<Guide />}/>
     </Routes>
   );
 }
