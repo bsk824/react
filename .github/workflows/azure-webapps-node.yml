@@ -1,0 +1,32 @@
+name : Pages Deployment
+
+on: [push]
+
+env:
+  NODE_VERSION: '14.17.3'
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    - name: yarn install, build
+      run: |
+        yarn install
+        yarn build
+    - name: move files
+      run : |
+        mkdir repo
+        rm -rf ./repo/*
+        mv ./build/* ./repo/
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./repo
