@@ -4,7 +4,7 @@ import style from 'assets/scss/guide.module.scss'
 import 'assets/scss/hlj/atom-one-dark.scss';
 import GuideRoutes from 'components/guide/guide-routes'
 
-function Guide() {
+export default function Guide() {
   return (
     <div className={style['wrap']}>
       <header className={style['header']}>
@@ -21,5 +21,3 @@ function Guide() {
     </div>
   );
 }
-
-export default Guide;
